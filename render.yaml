@@ -1,0 +1,36 @@
+# render.yaml — Pokémon Showdown game server (Render Blueprint)
+# Docs: https://render.com/docs/blueprint-spec
+#
+# This deploys ONLY the battle/chat server (this repo). The web client lives in
+# the separate pokemon-showdown-client repo and is deployed as its own service.
+#
+# To use: commit this file, push to your GitHub repo, then in Render:
+#   New + → Blueprint → pick this repo → Apply.
+
+services:
+  - type: web
+    name: showdown-server
+    runtime: node
+    # "starter" = always-on ($7/mo). Do NOT use "free": free instances sleep
+    # after ~15 min idle, which disconnects every player and cold-starts.
+    plan: starter
+    # Change to the region closest to you and your friends.
+    region: oregon
+    # The branch Render auto-deploys when you push.
+    branch: master
+    # MUST stay 1. The server is stateful (battles/rooms/ladder are in memory);
+    # a second instance would break everything.
+    numInstances: 1
+    autoDeploy: true
+    # Compiles TS → dist/ with esbuild. node build also creates config/config.js
+    # from the example if you didn't provide one.
+    buildCommand: npm install && node build
+    # The numeric $PORT is picked up as the listen port (see server/sockets.ts).
+    # It re-runs node build on boot (fast, self-healing). Add --skip-build right
+    # before $PORT once you trust the deploy, to skip the rebuild on start.
+    startCommand: node pokemon-showdown $PORT
+    envVars:
+      # The launcher requires Node 22+; package.json's "engines" is stale.
+      - key: NODE_VERSION
+        value: "22"
+    # No healthCheckPath: Render marks the service live once it binds $PORT.

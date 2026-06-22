@@ -511,9 +511,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: "[Gen 9 Champions] NatDex Draft",
-		mod: 'champions',
+		mod: 'natdexchampions',
 		searchShow: false,
-		itemClauseDefault: true,
 		ruleset: ['Standard Draft', 'NatDex Mod'],
 		checkCanLearn(move, species, setSources, set) {
 			if (!this.ruleTable.has('natdexmod')) return this.checkCanLearn(move, species, setSources, set);
@@ -1389,7 +1388,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				if (this.ruleTable.isBanned(`item:${i.id}`)) return [`${set.species}'s item ${i.name} is banned.`];
 			}
 
-			const setHas: { [k: string]: true } = {};
+			const setHas: { [k: string]: true; } = {};
 			for (const thing of [...moves, ...items, ...abilities]) {
 				if (setHas[thing.id]) return [`${set.species} has multiple copies of ${thing.name}.`];
 				setHas[thing.id] = true;
@@ -1458,7 +1457,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				}
 			}
 			if (pokemon.hasItem('abilityshield') ||
-				pokemon.m.scrambled.items.some((e: { thing: string }) => this.toID(e.thing) === 'abilityshield')) {
+				pokemon.m.scrambled.items.some((e: { thing: string; }) => this.toID(e.thing) === 'abilityshield')) {
 				ngas = false;
 			}
 			for (const ability of pokemon.m.scrambled.abilities) {
@@ -1474,15 +1473,15 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				pokemon.volatiles[effect].inSlot = item.inSlot;
 			}
 			if (ngas) {
-				if ((pokemon.m.scrambled.moves as { inSlot: string }[]).findIndex(e => e.inSlot === 'Ability') >= 0) {
-					const isMove = (pokemon.m.scrambled.moves as { inSlot: string }[]).findIndex(e => e.inSlot === 'Ability');
+				if ((pokemon.m.scrambled.moves as { inSlot: string; }[]).findIndex(e => e.inSlot === 'Ability') >= 0) {
+					const isMove = (pokemon.m.scrambled.moves as { inSlot: string; }[]).findIndex(e => e.inSlot === 'Ability');
 					const indexOfMove = pokemon.moveSlots.findIndex(m => this.toID(pokemon.m.scrambled.moves[isMove].thing) === m.id);
 					if (indexOfMove >= 0) pokemon.moveSlots.splice(indexOfMove, 1);
 				}
 			}
 			if (this.field.getPseudoWeather('magicroom')) {
-				if ((pokemon.m.scrambled.moves as { inSlot: string }[]).findIndex(e => e.inSlot === 'Item') >= 0) {
-					const isMove = (pokemon.m.scrambled.moves as { inSlot: string }[]).findIndex(e => e.inSlot === 'Item');
+				if ((pokemon.m.scrambled.moves as { inSlot: string; }[]).findIndex(e => e.inSlot === 'Item') >= 0) {
+					const isMove = (pokemon.m.scrambled.moves as { inSlot: string; }[]).findIndex(e => e.inSlot === 'Item');
 					const indexOfMove = pokemon.moveSlots.findIndex(m => this.toID(pokemon.m.scrambled.moves[isMove].thing) === m.id);
 					if (indexOfMove >= 0) pokemon.moveSlots.splice(indexOfMove, 1);
 				}
@@ -2161,7 +2160,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		onValidateTeam(team, f, teamHas) {
 			if (this.ruleTable.has('abilityclause')) {
 				const abilityTable = new this.dex.Multiset<string>();
-				const base: { [k: string]: string } = {
+				const base: { [k: string]: string; } = {
 					airlock: 'cloudnine',
 					armortail: 'queenlymajesty',
 					battlearmor: 'shellarmor',
@@ -2517,8 +2516,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				move.flags['protect'] = 1;
 				move.category = species.baseStats['spa'] > species.baseStats['atk'] ? 'Special' :
 					species.baseStats['spa'] < species.baseStats['atk'] ? 'Physical' :
-					pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true) ? 'Physical' :
-					'Special';
+						pokemon.getStat('atk', false, true) > pokemon.getStat('spa', false, true) ? 'Physical' :
+							'Special';
 				move.onAfterHit = function (t, s, m) {
 					if (s.getAbility().name === species.abilities['0']) return;
 					const effect = 'ability:' + this.toID(species.abilities['0']);
