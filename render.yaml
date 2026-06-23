@@ -17,7 +17,7 @@ services:
     # Change to the region closest to you and your friends.
     region: oregon
     # The branch Render auto-deploys when you push.
-    branch: master
+    branch: deploy
     # MUST stay 1. The server is stateful (battles/rooms/ladder are in memory);
     # a second instance would break everything.
     numInstances: 1
