@@ -26,9 +26,12 @@ services:
     # from the example if you didn't provide one.
     buildCommand: npm install && node build
     # The numeric $PORT is picked up as the listen port (see server/sockets.ts).
-    # It re-runs node build on boot (fast, self-healing). Add --skip-build right
-    # before $PORT once you trust the deploy, to skip the rebuild on start.
-    startCommand: node pokemon-showdown $PORT
+    # --skip-build skips the redundant esbuild rebuild on boot. buildCommand
+    # already produced dist/, so rebuilding again at startup just wastes time and
+    # spikes memory (the transpile + the booting server briefly coexist), which
+    # is what tipped a 512Mi instance into OOM. Remove --skip-build only if you
+    # ever start the server without running buildCommand first.
+    startCommand: node pokemon-showdown --skip-build $PORT
     envVars:
       # The launcher requires Node 22+; package.json's "engines" is stale.
       - key: NODE_VERSION
